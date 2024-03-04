@@ -2,15 +2,35 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
+public class FovSettings
+{
+    [SerializeField] private float normalFOV = 60f;
+    [SerializeField] private float runningFOV = 80f;
+    [SerializeField] private float fovChangeSpeed = 5f;
+
+    public float NormalFOV => normalFOV;
+    public float RunningFOV => runningFOV;
+    public float FovChangeSpeed => fovChangeSpeed;
+}
+
 public class CameraController : MonoBehaviour
 {
+    [SerializeField] private FovSettings fovSettings;
     [SerializeField] private int playerId;
     [SerializeField] private float mouseSensitivity = 100.0f; // Sensibilité de la souris
     [SerializeField] private float controllerSensitivity = 100.0f; // Sensibilité du gamepad
+
+    [SerializeField] private MovementController movementController;
+
+
+
+    private Camera camera;
     private float xRotation = 0f; // Rotation sur l'axe X pour regarder vers le haut et le bas
 
     void Start()
     {
+        camera = GetComponent<Camera>();
         if (playerId == 1)
         {
             Cursor.lockState = CursorLockMode.Locked;
@@ -22,11 +42,14 @@ public class CameraController : MonoBehaviour
         if (playerId == 1)
         {
             HandleMouseLook();
+            UpdateCameraFOV();
         }
         else if (playerId == 2)
         {
             HandleGamepadLook();
+            UpdateCameraFOV();
         }
+
     }
 
     // Gestion de la rotation de la caméra avec la souris
@@ -55,5 +78,20 @@ public class CameraController : MonoBehaviour
 
         transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f); // Rotation verticale
         transform.parent.Rotate(Vector3.up * horizontal); // Rotation horizontale
+    }
+
+
+
+    private void UpdateCameraFOV()
+    {
+        if (movementController.IsRunning())
+        {
+            Debug.Log("Player is running.");
+            camera.fieldOfView = Mathf.Lerp(camera.fieldOfView, fovSettings.RunningFOV, fovSettings.FovChangeSpeed * Time.deltaTime);
+        }
+        else
+        {
+            camera.fieldOfView = Mathf.Lerp(camera.fieldOfView, fovSettings.NormalFOV, fovSettings.FovChangeSpeed * Time.deltaTime);
+        }
     }
 }

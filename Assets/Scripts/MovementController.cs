@@ -7,8 +7,8 @@ public class PlayerMovementSettings
 {
     [SerializeField] private float runSpeed = 10.0f;
     [SerializeField] private float walkSpeed = 5.0f;
-    [SerializeField] private float maxJumpHeight = 2.0f;
-    [SerializeField] private float maxJumpTime = 1.0f;
+    [SerializeField] private float maxJumpHeight = 3.0f;
+    [SerializeField] private float maxJumpTime = 1.5f;
 
     public float RunSpeed => runSpeed;
     public float WalkSpeed => walkSpeed;
@@ -20,7 +20,7 @@ public class PlayerMovementSettings
 public class PlayerStaminaSettings
 {
     [SerializeField] private float maxStamina = 100f;
-    [SerializeField] private float staminaDepletionRate = 5f;
+    [SerializeField] private float staminaDepletionRate = 10f;
     [SerializeField] private float staminaRecoveryRate = 10f;
 
     public float MaxStamina => maxStamina;
@@ -214,5 +214,10 @@ public class MovementController : MonoBehaviour
         float timeToApex = movementSettings.MaxJumpTime / 2;
         gravity = (-2 * movementSettings.MaxJumpHeight) / Mathf.Pow(timeToApex, 2);
         initialJumpVelocity = (2 * movementSettings.MaxJumpHeight) / timeToApex;
+    }
+
+    public bool IsRunning()
+    {
+        return isRunning;
     }
 }
