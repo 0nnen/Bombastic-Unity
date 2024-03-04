@@ -1,6 +1,7 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SocialPlatforms.Impl;
 
 [System.Serializable]
 public class BallSettings
@@ -44,6 +45,7 @@ public class BallManager : MonoBehaviour
     private Vector3 initialPosition;
     private bool isPickedUp = false;
     private Transform ballHoldPosition;
+    private int BallInCamp;
 
     void Start()
     {
@@ -65,21 +67,21 @@ public class BallManager : MonoBehaviour
         ballHoldPosition = new GameObject("BallHoldPosition").transform;
     }
 
-    // Gestion des entrées pour les deux joueurs
+    // Gestion des entrï¿½es pour les deux joueurs
     private void HandlePlayerInput()
     {
         if (Input.GetButtonDown("FireMouse")) HandleInteraction(1);
         else if (Input.GetButtonDown("FireGamepad")) HandleInteraction(2);
     }
 
-    // Gère l'interaction en fonction de l'ID du joueur
+    // Gï¿½re l'interaction en fonction de l'ID du joueur
     private void HandleInteraction(int playerId)
     {
         if (!isPickedUp) TryPickUp(playerId);
         else if (IsPlayerHoldingBall(playerId)) ThrowBall();
     }
 
-    // Vérifie si le joueur tient la balle
+    // Vï¿½rifie si le joueur tient la balle
     private bool IsPlayerHoldingBall(int playerId)
     {
         return playerTransform && playerTransform.GetComponent<MovementController>().PlayerId == playerId;
@@ -88,7 +90,7 @@ public class BallManager : MonoBehaviour
     // Essaie de ramasser la balle
     private void TryPickUp(int playerId)
     {
-        // Sphère autour de la balle pour détecter les joueurs à proximité
+        // Sphï¿½re autour de la balle pour dï¿½tecter les joueurs ï¿½ proximitï¿½
         Collider[] hitColliders = Physics.OverlapSphere(transform.position, ballSettings.PickupDistance);
         foreach (var hitCollider in hitColliders)
         {
@@ -100,7 +102,7 @@ public class BallManager : MonoBehaviour
         }
     }
 
-    // Vérifie si les conditions de ramassage sont remplies
+    // Vï¿½rifie si les conditions de ramassage sont remplies
     private bool IsPickupConditionMet(Collider hitCollider, int playerId)
     {
         return hitCollider.CompareTag("Player") && hitCollider.GetComponent<MovementController>().PlayerId == playerId;
@@ -116,19 +118,19 @@ public class BallManager : MonoBehaviour
         currentCamera = (playerId == 1) ? player1Camera : player2Camera;
     }
 
-    // Mise à jour de la position de la balle lorsqu'elle est tenue
+    // Mise ï¿½ jour de la position de la balle lorsqu'elle est tenue
     private void UpdateBallPosition()
     {
         // Calcule la position devant le joueur en se basant sur sa direction actuelle
         Vector3 positionInFront = playerTransform.position + playerTransform.forward * 3f;
 
-        // Calcule la position au-dessus du sol pour que la balle soit tenue à une hauteur réaliste
+        // Calcule la position au-dessus du sol pour que la balle soit tenue ï¿½ une hauteur rï¿½aliste
         Vector3 positionAbove = Vector3.up * 3.5f;
 
-        // Définit la position de la balle
+        // Dï¿½finit la position de la balle
         ballHoldPosition.position = positionInFront + positionAbove;
 
-        // Ajuste la rotation de la balle pour qu'elle corresponde à la rotation de la caméra et du joueur
+        // Ajuste la rotation de la balle pour qu'elle corresponde ï¿½ la rotation de la camï¿½ra et du joueur
         ballHoldPosition.rotation = Quaternion.Euler(currentCamera.transform.eulerAngles.x, playerTransform.eulerAngles.y, playerTransform.eulerAngles.z);
         AttachToPlayer();
     }
@@ -136,7 +138,7 @@ public class BallManager : MonoBehaviour
     // Attache la balle au joueur
     private void AttachToPlayer()
     {
-        // MovePosition pour une mise à jour plus douce
+        // MovePosition pour une mise ï¿½ jour plus douce
         rb.MovePosition(ballHoldPosition.position);
         rb.MoveRotation(ballHoldPosition.rotation);
     }
@@ -175,31 +177,68 @@ public class BallManager : MonoBehaviour
 
 
 
-    // Méthodes pour la gestion de l'explosion et de la réapparition de la balle
-   
-    private void ScheduleExplosion()
-    {
-        float randomDelay = Random.Range(ballSettings.MinExplosionDelay, ballSettings.MaxExplosionDelay);
-        Invoke("Explode", randomDelay);
-    }
-
+    // Mï¿½thodes pour la gestion de l'explosion et de la rï¿½apparition de la balle
+    // Planifie l'explosion aprï¿½s un dï¿½lai
     private void Explode()
     {
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+
+        // Parcourez tous les joueurs
+        if (BallInCamp == 1)
+        {
+            GetComponent<Score>().IncreasePlayer2Score();
+            Debug.Log("Ball Explodes in camp 1, Player 2 Win");
+        }
+        else if (BallInCamp == 2)
+        {
+            GetComponent<Score>().IncreasePlayer1Score();
+            Debug.Log("Ball Explodes in camp 2, Player 1 Win");
+        }
+        else
+        {
+            Debug.Log("Ou est la balle");
+        }
         GameObject explosion = Instantiate(ballSettings.ExplosionEffectsContainer, transform.position, Quaternion.identity);
         StartCoroutine(RespawnAfterDelay());
     }
 
     private IEnumerator RespawnAfterDelay()
     {
+        // Dï¿½sactivation et rï¿½activation de la balle
         ballRenderer.enabled = false;
         rb.isKinematic = true;
-
         yield return new WaitForSeconds(ballSettings.RespawnDelay);
-
-        transform.position = initialPosition;
+        ResetBallPosition();
         ballRenderer.enabled = true;
         rb.isKinematic = false;
+    }
 
-        ScheduleExplosion();
+    public void ResetBallPosition()
+    {
+        transform.position = initialPosition; // Rï¿½initialise la position de la balle
+        isPickedUp = false; // Assure que la balle n'est pas considï¿½rï¿½e comme ramassï¿½e
+    }
+
+    private void ScheduleExplosion()
+    {
+        float randomDelay = Random.Range(ballSettings.MinExplosionDelay, ballSettings.MaxExplosionDelay);
+        Invoke("Explode", randomDelay);
+    }
+
+
+    public void SetCamp(int _camp)
+    {
+        BallInCamp = _camp;
+    }
+
+    void OnCollisionEnter(Collision collision)
+    {
+        if (!isPickedUp)
+        {
+            if (collision.gameObject.CompareTag("Player"))
+            {
+                Explode();
+            }
+        }
     }
 }
