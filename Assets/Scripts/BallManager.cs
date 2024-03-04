@@ -6,22 +6,22 @@ using UnityEngine.SocialPlatforms.Impl;
 [System.Serializable]
 public class BallSettings
 {
-    [SerializeField, Tooltip("Minimum delay before the ball can explode.")]
+    [SerializeField, Tooltip("Delais Minimum avant l'explosion de la balle")]
     private float minExplosionDelay = 10.0f;
 
-    [SerializeField, Tooltip("Maximum delay before the ball can explode.")]
+    [SerializeField, Tooltip("Delais Maximum avant l'explosion de la balle")]
     private float maxExplosionDelay = 60.0f;
 
-    [SerializeField, Tooltip("Time to wait before respawning the ball.")]
+    [SerializeField, Tooltip("Temps dt'attente de respawn de la balle")]
     private float respawnDelay = 3.0f;
 
-    [SerializeField, Tooltip("How close must the player be to pick up the ball.")]
+    [SerializeField, Tooltip("Distance pour attraper la balle")]
     private float pickupDistance = 5.0f;
 
-    [SerializeField, Tooltip("The force applied when the ball is thrown.")]
+    [SerializeField, Tooltip("Force lorsque la balle est lancée")]
     private float throwForce = 50.0f;
 
-    [SerializeField, Tooltip("The effects to show when the ball explodes.")]
+    [SerializeField, Tooltip("Effet lorsque la balle explose")]
     private GameObject explosionEffectsContainer;
 
     public float MinExplosionDelay => minExplosionDelay;
@@ -38,6 +38,7 @@ public class BallManager : MonoBehaviour
     [SerializeField] private Camera player1Camera;
     [SerializeField] private Camera player2Camera;
 
+    private MovementController playerMovementController;
     private Camera currentCamera;
     private Rigidbody rb;
     private Renderer ballRenderer;
@@ -67,30 +68,42 @@ public class BallManager : MonoBehaviour
         ballHoldPosition = new GameObject("BallHoldPosition").transform;
     }
 
-    // Gestion des entr�es pour les deux joueurs
+    // Gestion des entrees pour les deux joueurs
     private void HandlePlayerInput()
     {
         if (Input.GetButtonDown("FireMouse")) HandleInteraction(1);
         else if (Input.GetButtonDown("FireGamepad")) HandleInteraction(2);
     }
 
-    // G�re l'interaction en fonction de l'ID du joueur
+    // Gere l'interaction en fonction de l'ID du joueur
     private void HandleInteraction(int playerId)
     {
         if (!isPickedUp) TryPickUp(playerId);
         else if (IsPlayerHoldingBall(playerId)) ThrowBall();
     }
 
-    // V�rifie si le joueur tient la balle
+    // Verifie si le joueur tient la balle
     private bool IsPlayerHoldingBall(int playerId)
     {
         return playerTransform && playerTransform.GetComponent<MovementController>().PlayerId == playerId;
     }
 
+    // Ramasse la balle
+    private void PickUpBall(Collider hitCollider, int playerId)
+    {
+        isPickedUp = true;
+        rb.isKinematic = true;
+        GetComponent<Collider>().enabled = false;
+        playerTransform = hitCollider.transform;
+        currentCamera = (playerId == 1) ? player1Camera : player2Camera;
+
+        playerMovementController = hitCollider.GetComponent<MovementController>();
+    }
+
     // Essaie de ramasser la balle
     private void TryPickUp(int playerId)
     {
-        // Sph�re autour de la balle pour d�tecter les joueurs � proximit�
+        // Sphere autour de la balle pour detecter les joueurs a proximite
         Collider[] hitColliders = Physics.OverlapSphere(transform.position, ballSettings.PickupDistance);
         foreach (var hitCollider in hitColliders)
         {
@@ -102,35 +115,25 @@ public class BallManager : MonoBehaviour
         }
     }
 
-    // V�rifie si les conditions de ramassage sont remplies
+    // Verifie si les conditions de ramassage sont remplies
     private bool IsPickupConditionMet(Collider hitCollider, int playerId)
     {
         return hitCollider.CompareTag("Player") && hitCollider.GetComponent<MovementController>().PlayerId == playerId;
     }
 
-    // Ramasse la balle
-    private void PickUpBall(Collider hitCollider, int playerId)
-    {
-        isPickedUp = true;
-        rb.isKinematic = true;
-        GetComponent<Collider>().enabled = false;
-        playerTransform = hitCollider.transform;
-        currentCamera = (playerId == 1) ? player1Camera : player2Camera;
-    }
-
-    // Mise � jour de la position de la balle lorsqu'elle est tenue
+    // Mise a jour de la position de la balle lorsqu'elle est tenue
     private void UpdateBallPosition()
     {
         // Calcule la position devant le joueur en se basant sur sa direction actuelle
-        Vector3 positionInFront = playerTransform.position + playerTransform.forward * 3f;
+        Vector3 positionInFront = playerTransform.position + playerTransform.forward * 4f;
 
-        // Calcule la position au-dessus du sol pour que la balle soit tenue � une hauteur r�aliste
-        Vector3 positionAbove = Vector3.up * 3.5f;
+        // Calcule la position au-dessus du sol pour que la balle soit tenue a une hauteur realiste
+        Vector3 positionAbove = Vector3.up * 4.5f;
 
-        // D�finit la position de la balle
+        // Definit la position de la balle
         ballHoldPosition.position = positionInFront + positionAbove;
 
-        // Ajuste la rotation de la balle pour qu'elle corresponde � la rotation de la cam�ra et du joueur
+        // Ajuste la rotation de la balle pour qu'elle corresponde a la rotation de la camera et du joueur
         ballHoldPosition.rotation = Quaternion.Euler(currentCamera.transform.eulerAngles.x, playerTransform.eulerAngles.y, playerTransform.eulerAngles.z);
         AttachToPlayer();
     }
@@ -138,7 +141,7 @@ public class BallManager : MonoBehaviour
     // Attache la balle au joueur
     private void AttachToPlayer()
     {
-        // MovePosition pour une mise � jour plus douce
+        // MovePosition pour une mise a jour plus douce
         rb.MovePosition(ballHoldPosition.position);
         rb.MoveRotation(ballHoldPosition.rotation);
     }
@@ -146,22 +149,27 @@ public class BallManager : MonoBehaviour
     // Lance la balle
     private void ThrowBall()
     {
-        if (playerTransform && currentCamera != null)
+        if (playerTransform && currentCamera != null && playerMovementController != null)
         {
             ReleaseBall();
 
-            // Direction de la camera
+            // Calculez la force du lancer basée sur l'endurance restante
+            // Inversez la proportion pour que moins d'endurance donne moins de force
+            float staminaProportion = 1 - (playerMovementController.CurrentStamina / playerMovementController.StaminaSettings.MaxStamina);
+            float scaledThrowForce = ballSettings.ThrowForce * (1 - staminaProportion);
+
+            // Direction du lancer
             Vector3 forwardDirection = currentCamera.transform.forward;
+            Vector3 throwDirection = (forwardDirection + Vector3.up * 0.1f).normalized;
 
-            // Trajectoire de lancer
-            Vector3 throwDirection = (forwardDirection + Vector3.up * 0.3f).normalized;
+            // Appliquez la force
+            Debug.Log("Throw force: " + scaledThrowForce);
+            rb.AddForce(throwDirection * scaledThrowForce, ForceMode.VelocityChange);
 
-            // Applique la force dans la direction du lancer
-            rb.AddForce(throwDirection * ballSettings.ThrowForce, ForceMode.VelocityChange);
         }
         else
         {
-            Debug.LogError("ThrowBall called but currentCamera or playerTransform is null.");
+            Debug.LogError("ThrowBall appelée mais currentCamera, playerTransform ou playerMovementController est null.");
         }
     }
 
@@ -177,8 +185,8 @@ public class BallManager : MonoBehaviour
 
 
 
-    // M�thodes pour la gestion de l'explosion et de la r�apparition de la balle
-    // Planifie l'explosion apr�s un d�lai
+    // Methodes pour la gestion de l'explosion et de la reapparition de la balle
+    // Planifie l'explosion apres un delai
     private void Explode()
     {
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
@@ -196,7 +204,7 @@ public class BallManager : MonoBehaviour
         }
         else
         {
-            Debug.Log("Ou est la balle");
+            Debug.Log("Où est la balle ???");
         }
         GameObject explosion = Instantiate(ballSettings.ExplosionEffectsContainer, transform.position, Quaternion.identity);
         StartCoroutine(RespawnAfterDelay());
@@ -204,7 +212,7 @@ public class BallManager : MonoBehaviour
 
     private IEnumerator RespawnAfterDelay()
     {
-        // D�sactivation et r�activation de la balle
+        // Desactivation et reactivation de la balle
         ballRenderer.enabled = false;
         rb.isKinematic = true;
         yield return new WaitForSeconds(ballSettings.RespawnDelay);
@@ -215,8 +223,8 @@ public class BallManager : MonoBehaviour
 
     public void ResetBallPosition()
     {
-        transform.position = initialPosition; // R�initialise la position de la balle
-        isPickedUp = false; // Assure que la balle n'est pas consid�r�e comme ramass�e
+        transform.position = initialPosition; // Reinitialise la position de la balle
+        isPickedUp = false; // Assure que la balle n'est pas consideree comme ramassee
     }
 
     private void ScheduleExplosion()

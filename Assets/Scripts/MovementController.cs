@@ -64,7 +64,14 @@ public class MovementController : MonoBehaviour
     public int PlayerId => playerId;
     public string HorizontalAxis => horizontalAxis;
     public string VerticalAxis => verticalAxis;
-
+    public float CurrentStamina
+    {
+        get { return currentStamina; }
+    }
+    public PlayerStaminaSettings StaminaSettings
+    {
+        get { return staminaSettings; }
+    }
 
     private CharacterController characterController;
     private Vector3 currentMovement;
