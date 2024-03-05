@@ -4,7 +4,7 @@ using UnityEngine;
 public class Score : MonoBehaviour
 {
     [SerializeField] private TMP_Text textScore;
-/*    [SerializeField] private GameObject confettiPrefab;*/
+    /* [SerializeField] private GameObject confettiPrefab; */
     [SerializeField] private GameObject Player1;
     [SerializeField] private GameObject Player2;
     private int player1Score = 0;
@@ -12,6 +12,7 @@ public class Score : MonoBehaviour
     private int totalRounds = 0;
     private bool isGameOver = false;
     private const int MaxRounds = 5;
+    private float currentTime = 0f;
 
     void Start()
     {
@@ -20,6 +21,8 @@ public class Score : MonoBehaviour
 
     void Update()
     {
+        currentTime += Time.deltaTime;
+        UpdateScoreText();
         if (isGameOver)
         {
             if (Input.GetKeyDown(KeyCode.Y))
@@ -40,8 +43,8 @@ public class Score : MonoBehaviour
         {
             player1Score++;
             totalRounds++;
-            UpdateScoreText();
-            /*ShowConfetti();*/
+            /*UpdateScoreText();*/
+            /* ShowConfetti(); */
             Debug.Log("Player 1 scored! Player 1 Score: " + player1Score);
             CheckForEndGame();
         }
@@ -53,8 +56,8 @@ public class Score : MonoBehaviour
         {
             player2Score++;
             totalRounds++;
-            UpdateScoreText();
-            /*ShowConfetti();*/
+            /*UpdateScoreText();*/  
+            /* ShowConfetti(); */
             Debug.Log("Player 2 scored! Player 2 Score: " + player2Score);
             CheckForEndGame();
         }
@@ -62,24 +65,26 @@ public class Score : MonoBehaviour
 
     private void UpdateScoreText()
     {
-        textScore.text = player1Score.ToString() + " : " + player2Score.ToString();
+        int minutes = Mathf.FloorToInt(currentTime / 60f);
+        int seconds = Mathf.FloorToInt(currentTime % 60f);
+        textScore.text = player1Score.ToString() + "  " + string.Format("{0:00}:{1:00}", minutes, seconds) + "  " + player2Score.ToString();
     }
 
-/*    private void ShowConfetti()
+    /* private void ShowConfetti()
     {
         // La logique pour afficher les confettis reste inchang�e
         if (Player1 != null)
         {
             Vector3 playerPosition = Player1.transform.position;
             Vector3 confettiPosition = playerPosition + Vector3.up * 20.0f;
-            *//*Instantiate(confettiPrefab, confettiPosition, Quaternion.identity);*//*
+            *//* Instantiate(confettiPrefab, confettiPosition, Quaternion.identity); *//*
             Debug.Log("Confetti spawned at position: " + confettiPosition);
         }
         else
         {
             Debug.LogWarning("Player object is null. Confetti cannot be spawned.");
         }
-    }*/
+    } */
 
     private void RestartGame()
     {
