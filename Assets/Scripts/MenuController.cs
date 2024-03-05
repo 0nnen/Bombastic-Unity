@@ -6,6 +6,8 @@ using UnityEngine.SceneManagement;
 using TMPro;
 using UnityEditor;
 using System.Globalization;
+using UnityEngine.SceneManagement;
+
 
 public class MenuController : MonoBehaviour
 {
@@ -14,7 +16,6 @@ public class MenuController : MonoBehaviour
 
     [SerializeField] private TMP_Text volumeTextValue = null;
     [SerializeField] private Slider volumeSlider = null;
-    [SerializeField] private GameObject confirmationPrompt = null;
     [SerializeField] private float defaultVolume =1.0f;
 
 /*--------------------------GAMEPLAY------------------------------*/
@@ -72,6 +73,11 @@ public class MenuController : MonoBehaviour
         Screen.SetResolution(resolution.width, resolution.height, Screen.fullScreen);
     }
 
+    public void StartButton()
+    {
+        SceneManager.LoadScene("BallTest");
+    }
+
     public void ExitGameDialogYes()
     {
         Application.Quit();
@@ -96,7 +102,6 @@ public class MenuController : MonoBehaviour
     public void VolumeApply()
     {
         PlayerPrefs.SetFloat("masterVolume",AudioListener.volume);
-        // StartCoroutine(ConfirmationBox());
 
     }
 
@@ -112,7 +117,6 @@ public class MenuController : MonoBehaviour
     public void GameplayApply()
     {
         PlayerPrefs.SetFloat("masterSen", mainControllerSen);
-        // StartCoroutine(ConfirmationBox());
     }
 
     /*--------------------------Graphics------------------------------*/
@@ -143,7 +147,6 @@ public class MenuController : MonoBehaviour
         PlayerPrefs.SetInt("masterFullscree",(_isFullScreen?1:0));
         Screen.fullScreen = _isFullScreen;
 
-        // StartCoroutine(ConfirmationBox());
     }
 
     public void ResetButton(string MenuType) {
@@ -174,11 +177,6 @@ public class MenuController : MonoBehaviour
             Screen.fullScreen = false;
         }
     }
-   /* public IEnumerator ConfirmationBox()
-    {
-        confirmationPrompt.SetActive(true);
-        yield return new WaitForSeconds(2);
-        confirmationPrompt.SetActive(false);
-    }*/
+
 }
 
