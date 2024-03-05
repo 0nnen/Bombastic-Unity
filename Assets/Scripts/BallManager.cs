@@ -38,6 +38,7 @@ public class BallManager : MonoBehaviour
     [SerializeField] private Camera player1Camera;
     [SerializeField] private Camera player2Camera;
 
+    public ScoreManager scoreManager;
     private MovementController playerMovementController;
     private Camera currentCamera;
     private Rigidbody rb;
@@ -194,12 +195,12 @@ public class BallManager : MonoBehaviour
         // Parcourez tous les joueurs
         if (BallInCamp == 1)
         {
-            GetComponent<Score>().IncreasePlayer2Score();
+            scoreManager.IncreasePlayer2Score(); // Utilisez la référence au ScoreManager pour augmenter le score du joueur 2
             Debug.Log("Ball Explodes in camp 1, Player 2 Win");
         }
         else if (BallInCamp == 2)
         {
-            GetComponent<Score>().IncreasePlayer1Score();
+            scoreManager.IncreasePlayer1Score(); // Utilisez la référence au ScoreManager pour augmenter le score du joueur 1
             Debug.Log("Ball Explodes in camp 2, Player 1 Win");
         }
         else

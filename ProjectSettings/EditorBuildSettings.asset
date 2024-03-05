@@ -11,6 +11,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/BallTest.unity
     guid: 471b648fbab80aa419433e599b2aeda8
+  - enabled: 1
+    path: Assets/Scenes/EndGame Scene.unity
+    guid: c4a932c409f89d6429dd2176006aad39
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: 0b41b36f749253f4fa8d59b04423c0f6,
       type: 2}
