@@ -23,7 +23,6 @@ public class Score : MonoBehaviour
         UpdateScoreText();
         endGamePanel.SetActive(false); 
         restartButton.onClick.AddListener(RestartGame);
-        menuButton.onClick.AddListener(BackToMenu);
     }
 
     void Update()
@@ -66,26 +65,23 @@ public class Score : MonoBehaviour
     private void DisplayEndGame()
     {
         endGamePanel.SetActive(true);
-        textEndGame.text = "Game Over. Final Score - Player 1: " + player1Score + ", Player 2: " + player2Score;
+        textEndGame.text = "Game Over. Final Score - " + player1Score.ToString() + " : " + player2Score.ToString();
     }
 
     public void RestartGame()
     {
-        //Cursor.lockState = CursorLockMode.None;
-        // Réinitialiser les variables pour recommencer le jeu
         SceneManager.LoadScene("BallTest");
         player1Score = 0;
         player2Score = 0;
         totalRounds = 0;
         UpdateScoreText();
         isGameOver = false;
-        endGamePanel.SetActive(false); // Cacher la fenêtre pop-up après le redémarrage.
+        endGamePanel.SetActive(false);
         
     }
 
     public void BackToMenu()
     {
-        //Cursor.lockState = CursorLockMode.None;
         SceneManager.LoadScene("MenuScene");
         
     }
