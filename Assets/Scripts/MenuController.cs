@@ -77,6 +77,11 @@ public class MenuController : MonoBehaviour
         Application.Quit();
     }
 
+    public void StartButton()
+    {
+        SceneManager.LoadScene("BallTest");
+    }
+
     public void ExitButton()
         {
             Application.Quit();
