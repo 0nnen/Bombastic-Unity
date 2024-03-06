@@ -66,7 +66,6 @@ public class BallManager : MonoBehaviour
         ballRenderer = GetComponent<Renderer>();
         initialPosition = transform.position;
         ballHoldPosition = new GameObject("BallHoldPosition").transform;
-        ScheduleExplosion();
     }
 
     // Gestion des entrees pour les deux joueurs
@@ -190,9 +189,9 @@ public class BallManager : MonoBehaviour
     // Planifie l'explosion apres un delai
     private void Explode()
     {
-        CancelInvoke("Explode");
-        ReleaseBall();
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
 
+        // Parcourez tous les joueurs
         if (BallInCamp == 1)
         {
             GetComponent<Score>().IncreasePlayer2Score();
@@ -220,7 +219,6 @@ public class BallManager : MonoBehaviour
         ResetBallPosition();
         ballRenderer.enabled = true;
         rb.isKinematic = false;
-        ScheduleExplosion();
     }
 
     public void ResetBallPosition()
