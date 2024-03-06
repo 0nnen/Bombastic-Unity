@@ -7,7 +7,7 @@ public class BallParticleEffect : MonoBehaviour
     private ParticleSystem particlesSystem;
     private Rigidbody rb;
 
-    public float maxSpeed = 10.0f; // Vitesse maximale pour l'effet maximal
+    public float maxSpeed = 50.0f; // Vitesse maximale pour l'effet maximal
 
     void Start()
     {

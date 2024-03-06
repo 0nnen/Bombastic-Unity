@@ -2,15 +2,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SocialPlatforms.Impl;
+using UnityEngine.UIElements;
 
 [System.Serializable]
 public class BallSettings
 {
     [SerializeField, Tooltip("Delais Minimum avant l'explosion de la balle")]
-    private float minExplosionDelay = 10.0f;
+    private float minExplosionDelay = 3.0f;
 
     [SerializeField, Tooltip("Delais Maximum avant l'explosion de la balle")]
-    private float maxExplosionDelay = 60.0f;
+    private float maxExplosionDelay = 5.0f;
 
     [SerializeField, Tooltip("Temps dt'attente de respawn de la balle")]
     private float respawnDelay = 3.0f;
@@ -51,6 +52,15 @@ public class BallManager : MonoBehaviour
     void Start()
     {
         InitializeComponents();
+        initialPosition = transform.position;
+        ScheduleExplosion();
+    }
+
+    // Appelé au début de chaque round
+    public void StartRound()
+    {
+        ResetBallPosition();
+        ScheduleExplosion();
     }
 
     void LateUpdate()
@@ -206,30 +216,48 @@ public class BallManager : MonoBehaviour
         {
             Debug.Log("Où est la balle ???");
         }
+        Debug.Log("Explode called");
         GameObject explosion = Instantiate(ballSettings.ExplosionEffectsContainer, transform.position, Quaternion.identity);
-        StartCoroutine(RespawnAfterDelay());
-    }
-
-    private IEnumerator RespawnAfterDelay()
-    {
-        // Desactivation et reactivation de la balle
-        ballRenderer.enabled = false;
-        rb.isKinematic = true;
-        yield return new WaitForSeconds(ballSettings.RespawnDelay);
-        ResetBallPosition();
-        ballRenderer.enabled = true;
-        rb.isKinematic = false;
+        Destroy(explosion, 2.0f);
+        StartCoroutine(RespawnAndScheduleNextExplosion());
     }
 
     public void ResetBallPosition()
     {
-        transform.position = initialPosition; // Reinitialise la position de la balle
-        isPickedUp = false; // Assure que la balle n'est pas consideree comme ramassee
+        transform.position = initialPosition;
+        isPickedUp = false;
+        rb.isKinematic = false;
+        ballRenderer.enabled = true;
+    }
+
+    private IEnumerator RespawnAndScheduleNextExplosion()
+    {
+        // Explosion et désactivation de la balle
+        ballRenderer.enabled = false;
+        rb.isKinematic = true;
+
+
+
+        // Attend le délai de réapparition avant de réinitialiser la balle
+        yield return new WaitForSeconds(ballSettings.RespawnDelay);
+        ResetBallPosition();
+
+        // Réactiver la balle pour le nouveau round
+        ballRenderer.enabled = true;
+        rb.isKinematic = false;
+
+        // Planifier la prochaine explosion pour le nouveau round
+        ScheduleExplosion();
     }
 
     private void ScheduleExplosion()
     {
+        // Annule toute explosion précédente planifiée pour éviter les doubles explosions
+        CancelInvoke("Explode");
+
+        // Planifier une nouvelle explosion avec un délai aléatoire
         float randomDelay = Random.Range(ballSettings.MinExplosionDelay, ballSettings.MaxExplosionDelay);
+        Debug.Log("Explosion scheduled in " + randomDelay + " seconds");
         Invoke("Explode", randomDelay);
     }
 

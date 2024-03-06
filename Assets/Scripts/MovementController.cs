@@ -73,6 +73,15 @@ public class MovementController : MonoBehaviour
         get { return staminaSettings; }
     }
 
+    public float CurrentMagic
+    {
+        get { return currentMagic; }
+    }
+    public PlayerMagicSettings MagicSettings
+    {
+        get { return magicSettings; }
+    }
+
     private CharacterController characterController;
     private Vector3 currentMovement;
     private float currentStamina;
