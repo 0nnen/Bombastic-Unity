@@ -53,7 +53,6 @@ public class Score : MonoBehaviour
             player2Score++;
             totalRounds++;
             UpdateScoreText();
-            Debug.Log("Player 2 scored! Player 2 Score: " + player2Score);
         }
     }
 
@@ -74,6 +73,7 @@ public class Score : MonoBehaviour
         player1Score = 0;
         player2Score = 0;
         totalRounds = 0;
+        currentTime = 0f;
         UpdateScoreText();
         isGameOver = false;
         endGamePanel.SetActive(false);
