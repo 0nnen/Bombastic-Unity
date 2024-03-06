@@ -10,13 +10,14 @@ public class Score : MonoBehaviour
     [SerializeField] private TMP_Text textEndGame;
     [SerializeField] private bool isGameOver = false;
 
-    public Button restartButton;
-    public Button menuButton;
-
     private int player1Score = 0;
     private int player2Score = 0;
     private int totalRounds = 0;
     private const int MaxRounds = 5;
+    private float currentTime = 0f;
+
+    public Button restartButton;
+    public Button menuButton;
 
     void Start()
     {
@@ -27,6 +28,8 @@ public class Score : MonoBehaviour
 
     void Update()
     {
+        currentTime += Time.deltaTime;
+        UpdateScoreText();
         if (player1Score >= 3 || player2Score >= 3 && !isGameOver)
         {
             DisplayEndGame();
@@ -34,6 +37,7 @@ public class Score : MonoBehaviour
             Cursor.lockState = CursorLockMode.None;
         }
     }
+
 
     public void IncreasePlayer1Score()
     {
@@ -53,31 +57,34 @@ public class Score : MonoBehaviour
             player2Score++;
             totalRounds++;
             UpdateScoreText();
+            Debug.Log("Player 2 scored! Player 2 Score: " + player2Score);
         }
     }
 
     private void UpdateScoreText()
     {
-        textScore.text = player2Score.ToString() + " : " + player1Score.ToString();
+        int minutes = Mathf.FloorToInt(currentTime / 60f);
+        int seconds = Mathf.FloorToInt(currentTime % 60f);
+        textScore.text = player1Score.ToString() + "  " + string.Format("{0:00}:{1:00}", minutes, seconds) + "  " + player2Score.ToString();
     }
 
     private void DisplayEndGame()
     {
+        Debug.Log("END");
         endGamePanel.SetActive(true);
         textEndGame.text = "Game Over. Final Score - " + player1Score.ToString() + " : " + player2Score.ToString();
     }
 
-    public void RestartGame()
+    private void RestartGame()
     {
         SceneManager.LoadScene("BallTest");
         player1Score = 0;
         player2Score = 0;
         totalRounds = 0;
         currentTime = 0f;
-        UpdateScoreText();
         isGameOver = false;
+        UpdateScoreText();
         endGamePanel.SetActive(false);
-
     }
 
     public void BackToMenu()
