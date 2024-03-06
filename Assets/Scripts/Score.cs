@@ -27,7 +27,7 @@ public class Score : MonoBehaviour
 
     void Update()
     {
-        if (totalRounds >= MaxRounds && !isGameOver)
+        if (player1Score >= 3 || player2Score >= 3 && !isGameOver)
         {
             DisplayEndGame();
             isGameOver = true;
@@ -59,7 +59,7 @@ public class Score : MonoBehaviour
 
     private void UpdateScoreText()
     {
-        textScore.text = player1Score.ToString() + " : " + player2Score.ToString();
+        textScore.text = player2Score.ToString() + " : " + player1Score.ToString();
     }
 
     private void DisplayEndGame()
@@ -83,6 +83,7 @@ public class Score : MonoBehaviour
     public void BackToMenu()
     {
         SceneManager.LoadScene("MenuScene");
+        Debug.Log("clique ");
 
     }
 }
