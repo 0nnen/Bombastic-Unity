@@ -25,12 +25,12 @@ public class CameraController : MonoBehaviour
 
 
 
-    private Camera camera;
+    private Camera Pcamera;
     private float xRotation = 0f; // Rotation sur l'axe X pour regarder vers le haut et le bas
 
     void Start()
     {
-        camera = GetComponent<Camera>();
+        Pcamera = GetComponent<Camera>();
         if (playerId == 1)
         {
             Cursor.lockState = CursorLockMode.Locked;
@@ -87,11 +87,11 @@ public class CameraController : MonoBehaviour
         if (movementController.IsRunning())
         {
             Debug.Log("Player is running.");
-            camera.fieldOfView = Mathf.Lerp(camera.fieldOfView, fovSettings.RunningFOV, fovSettings.FovChangeSpeed * Time.deltaTime);
+            Pcamera.fieldOfView = Mathf.Lerp(Pcamera.fieldOfView, fovSettings.RunningFOV, fovSettings.FovChangeSpeed * Time.deltaTime);
         }
         else
         {
-            camera.fieldOfView = Mathf.Lerp(camera.fieldOfView, fovSettings.NormalFOV, fovSettings.FovChangeSpeed * Time.deltaTime);
+            Pcamera.fieldOfView = Mathf.Lerp(Pcamera.fieldOfView, fovSettings.NormalFOV, fovSettings.FovChangeSpeed * Time.deltaTime);
         }
     }
 }
