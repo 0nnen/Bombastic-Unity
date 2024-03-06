@@ -92,6 +92,7 @@ public class Score : MonoBehaviour
         player1Score = 0;
         player2Score = 0;
         totalRounds = 0;
+        currentTime = 0f;
         isGameOver = false;
         UpdateScoreText();
     }
