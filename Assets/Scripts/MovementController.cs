@@ -110,6 +110,19 @@ public class MovementController : MonoBehaviour
         HandleJetpack();
         RecoverStamina();
         RecoverMagic();
+/*        // Vérifie si la stamina est au maximum, sinon récupère-la lentement
+        if (currentStamina < staminaSettings.MaxStamina)
+        {
+            currentStamina += staminaSettings.StaminaRecoveryRate * Time.deltaTime;
+            currentStamina = Mathf.Clamp(currentStamina, 0, staminaSettings.MaxStamina);
+        }
+
+        // Vérifie si la magic est au maximum, sinon récupère-la lentement
+        if (currentMagic < magicSettings.MaxMagic)
+        {
+            currentMagic += magicSettings.MagicRecoveryRate * Time.deltaTime;
+            currentMagic = Mathf.Clamp(currentMagic, 0, magicSettings.MaxMagic);
+        }*/
     }
 
     // Récupère les entrées de l'utilisateur et gère le mouvement, le saut et le jetpack
@@ -222,6 +235,16 @@ public class MovementController : MonoBehaviour
         {
             currentMagic += magicSettings.MagicRecoveryRate * Time.deltaTime;
         }
+    }
+
+    public void RestoreStaminaToMax()
+    {
+        currentStamina = staminaSettings.MaxStamina;
+    }
+
+    public void RestoreMagicToMax()
+    {
+        currentMagic = magicSettings.MaxMagic;
     }
 
     // Configure les variables nécessaires pour calculer la force de saut et la gravité
