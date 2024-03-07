@@ -246,8 +246,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ballSettings:
-    minExplosionDelay: 10
-    maxExplosionDelay: 130
+    minExplosionDelay: 150
+    maxExplosionDelay: 150
     respawnDelay: 3
     pickupDistance: 6
     throwForce: 50
@@ -7847,6 +7847,7 @@ GameObject:
   - component: {fileID: 972672608}
   - component: {fileID: 972672607}
   - component: {fileID: 1136100499}
+  - component: {fileID: 1136100500}
   m_Layer: 0
   m_Name: Camp1Trigger
   m_TagString: Untagged
@@ -8061,6 +8062,21 @@ MonoBehaviour:
     type: 3}
   numberOfObjects: 5
   scaleRange: {x: 0.5, y: 1.5}
+--- !u!114 &1136100500
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 972672606}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c3dad98c8d7f93949b126017abbcc79d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Bonus:
+  - {fileID: 1202522996400206, guid: f87e7926fd589094b8a269e14b8bea5e, type: 3}
+  - {fileID: 1500378020736912, guid: 2547a66872ebe45408ace228820a79e1, type: 3}
 --- !u!222 &1136100501
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -8306,6 +8322,7 @@ GameObject:
   - component: {fileID: 1266619297}
   - component: {fileID: 1266619296}
   - component: {fileID: 1266619301}
+  - component: {fileID: 1266619302}
   m_Layer: 0
   m_Name: Camp2Trigger
   m_TagString: Untagged
@@ -8428,6 +8445,21 @@ MonoBehaviour:
     type: 3}
   numberOfObjects: 5
   scaleRange: {x: 0.5, y: 1.5}
+--- !u!114 &1266619302
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1266619295}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c3dad98c8d7f93949b126017abbcc79d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Bonus:
+  - {fileID: 1202522996400206, guid: f87e7926fd589094b8a269e14b8bea5e, type: 3}
+  - {fileID: 1500378020736912, guid: 2547a66872ebe45408ace228820a79e1, type: 3}
 --- !u!1 &1276316939
 GameObject:
   m_ObjectHideFlags: 0
