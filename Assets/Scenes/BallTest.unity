@@ -246,8 +246,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ballSettings:
-    minExplosionDelay: 150
-    maxExplosionDelay: 150
+    minExplosionDelay: 15
+    maxExplosionDelay: 90
     respawnDelay: 3
     pickupDistance: 6
     throwForce: 50
@@ -7645,7 +7645,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 961140213}
-  - component: {fileID: 972672612}
   - component: {fileID: 961140217}
   - component: {fileID: 961140215}
   - component: {fileID: 961140216}
@@ -7954,18 +7953,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 527485023}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &972672612
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 961140212}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!224 &1131954735 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 7657957822914494709, guid: 2b7b3dcea034b7b4183c1ed6a4001881,

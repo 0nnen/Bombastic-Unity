@@ -36,8 +36,11 @@ public class AnimationStateController : MonoBehaviour
     // Traitement des entrées clavier pour les déplacements et les actions
     void ProcessInput(out bool isRunning, out bool isJumping)
     {
-        isRunning = Input.GetKey(movementController.PlayerId == 1 ? KeyCode.LeftShift : KeyCode.Keypad3) || Input.GetButton("RunGamepad");
-        isJumping = Input.GetKeyDown(movementController.PlayerId == 1 ? KeyCode.Space : KeyCode.Keypad0) || Input.GetButtonDown("JumpGamepad");
+        isRunning = (movementController.PlayerId == 1 && Input.GetKey(KeyCode.LeftShift)) ||
+                    (movementController.PlayerId == 2 && Input.GetButton("RunGamepad"));
+
+        isJumping = (movementController.PlayerId == 1 && Input.GetKeyDown(KeyCode.Space)) ||
+                    (movementController.PlayerId == 2 && Input.GetButton("JumpGamepad"));
 
         // Calcul des vitesses cibles basées sur les touches pressées
         float targetVelocityZ = GetAxisRawVertical() * (isRunning ? maxRunVelocity : maxWalkVelocity);

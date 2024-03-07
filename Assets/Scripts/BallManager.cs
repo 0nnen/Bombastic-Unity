@@ -63,6 +63,7 @@ public class BallManager : MonoBehaviour
         ScheduleExplosion();
     }
 
+
     void LateUpdate()
     {
         HandlePlayerInput();
@@ -82,7 +83,9 @@ public class BallManager : MonoBehaviour
     private void HandlePlayerInput()
     {
         if (Input.GetButtonDown("FireMouse")) HandleInteraction(1);
-        else if (Input.GetButtonDown("FireGamepad")) HandleInteraction(2);
+        else if (Input.GetButtonDown("FireGamepad")){
+            HandleInteraction(2);
+        };
     }
 
     // Gere l'interaction en fonction de l'ID du joueur

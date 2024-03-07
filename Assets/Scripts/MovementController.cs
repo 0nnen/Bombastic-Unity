@@ -133,12 +133,10 @@ public class MovementController : MonoBehaviour
     private void HandleInput()
     {
         isRunning = (playerId == 1 && Input.GetKey(KeyCode.LeftShift)) ||
-                    (playerId == 2 && Input.GetKey(KeyCode.Keypad1)) ||
-                    Input.GetButton("RunGamepad");
+                    (playerId == 2 && Input.GetButton("RunGamepad"));
 
         isJumping = (playerId == 1 && Input.GetKeyDown(KeyCode.Space)) ||
-                    (playerId == 2 && Input.GetKeyDown(KeyCode.Keypad0)) ||
-                    Input.GetButtonDown("JumpGamepad");
+                    (playerId == 2 && Input.GetButton("JumpGamepad"));
 
         // Contrôles séparés pour le jetpack
         if (playerId == 1)
