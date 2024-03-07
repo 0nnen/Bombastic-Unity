@@ -67,6 +67,7 @@ public class MovementController : MonoBehaviour
     public float CurrentStamina
     {
         get { return currentStamina; }
+        set { currentStamina = value; }
     }
     public PlayerStaminaSettings StaminaSettings
     {
@@ -76,6 +77,7 @@ public class MovementController : MonoBehaviour
     public float CurrentMagic
     {
         get { return currentMagic; }
+        set { currentMagic = value; }
     }
     public PlayerMagicSettings MagicSettings
     {
