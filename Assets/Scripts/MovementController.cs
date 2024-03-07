@@ -45,9 +45,11 @@ public class PlayerJetpackSettings
 {
     [SerializeField] private float jetpackForce = 5f;
     [SerializeField] private float jetpackMagicCost = 10f;
+    [SerializeField] private GameObject jetpackVFX;
 
     public float JetpackForce => jetpackForce;
     public float JetpackMagicCost => jetpackMagicCost;
+    public GameObject JetpackVFX => jetpackVFX;
 }
 
 public class MovementController : MonoBehaviour
@@ -209,6 +211,11 @@ public class MovementController : MonoBehaviour
 
         if (isUsingJetpack)
         {
+            if (!jetpackSettings.JetpackVFX.GetComponent<ParticleSystem>().isEmitting)
+            {
+                Debug.Log("Play");
+                jetpackSettings.JetpackVFX.GetComponent<ParticleSystem>().Play();
+            }
             // La magie se vide en 3 secondes
             currentMagic -= magicSettings.MaxMagic / 3f * Time.deltaTime;
             // Applique la force du jetpack
@@ -217,7 +224,13 @@ public class MovementController : MonoBehaviour
         // Applique la gravité si le jetpack n'est pas utilisé
         else if (!characterController.isGrounded)
         {
+            if (jetpackSettings.JetpackVFX.GetComponent<ParticleSystem>().isEmitting)
+            {
+                Debug.Log("Stop");
+                jetpackSettings.JetpackVFX.GetComponent<ParticleSystem>().Stop();
+            }
             currentMovement.y += gravity * Time.deltaTime;
+            
         }
     }
 
