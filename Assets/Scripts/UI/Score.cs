@@ -8,7 +8,6 @@ public class Score : MonoBehaviour
     [SerializeField] private TMP_Text textScore;
     [SerializeField] private GameObject endGamePanel;
     [SerializeField] private TMP_Text textEndGame;
-    [SerializeField] private bool isGameOver = false;
 
     private int player1Score = 0;
     private int player2Score = 0;
@@ -18,6 +17,8 @@ public class Score : MonoBehaviour
 
     public Button restartButton;
     public Button menuButton;
+
+    private bool isGameOver = false;
 
     void Start()
     {
@@ -29,16 +30,23 @@ public class Score : MonoBehaviour
 
     void Update()
     {
-        currentTime += Time.deltaTime;
-        UpdateScoreText();
-        if (player1Score >= 3 || player2Score >= 3 && !isGameOver)
+        if (!isGameOver)
+        {
+            currentTime += Time.deltaTime;
+            UpdateScoreText();
+            CheckForGameOver();
+        }
+    }
+
+    private void CheckForGameOver()
+    {
+        if ((player1Score >= 3 || player2Score >= 3) && !isGameOver)
         {
             DisplayEndGame();
             isGameOver = true;
             Cursor.lockState = CursorLockMode.None;
         }
     }
-
 
     public void IncreasePlayer1Score()
     {

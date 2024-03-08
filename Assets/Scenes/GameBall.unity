@@ -9570,6 +9570,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4325452537868644197, guid: 2f262312a22643c42a73323cd291252b,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5059240941348623316, guid: 2f262312a22643c42a73323cd291252b,
         type: 3}
       propertyPath: m_Name
@@ -9653,6 +9658,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7287770696071243079, guid: 3b53bb6037d48fb4e8ea3c761785d048,
+        type: 3}
+      propertyPath: m_Name
+      value: Camp1Trigger
+      objectReference: {fileID: 0}
+    - target: {fileID: 7746254797092168136, guid: 3b53bb6037d48fb4e8ea3c761785d048,
+        type: 3}
+      propertyPath: m_Name
+      value: Camp2Trigger
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

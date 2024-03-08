@@ -107,11 +107,19 @@ public class BallManager : MonoBehaviour
     {
         isPickedUp = true;
         rb.isKinematic = true;
-        GetComponent<Collider>().enabled = false;
+        /*        GetComponent<Collider>().enabled = false;*/
         playerTransform = hitCollider.transform;
         currentCamera = (playerId == 1) ? player1Camera : player2Camera;
 
         playerMovementController = hitCollider.GetComponent<MovementController>();
+    }
+
+    private void ReleaseBall()
+    {
+        isPickedUp = false;
+        rb.isKinematic = false;
+        GetComponent<Collider>().enabled = true;
+        playerTransform = null;
     }
 
     // Essaie de ramasser la balle
@@ -187,18 +195,6 @@ public class BallManager : MonoBehaviour
         }
     }
 
-    // Libere la balle
-    private void ReleaseBall()
-    {
-        isPickedUp = false;
-        rb.isKinematic = false;
-        GetComponent<Collider>().enabled = true;
-        playerTransform = null;
-    }
-
-
-
-
     // Methodes pour la gestion de l'explosion et de la reapparition de la balle
     // Planifie l'explosion apres un delai
     private void Explode()
@@ -224,14 +220,15 @@ public class BallManager : MonoBehaviour
         GameObject explosion = Instantiate(ballSettings.ExplosionEffectsContainer, transform.position, Quaternion.identity);
         Destroy(explosion, 2.0f);
         StartCoroutine(RespawnAndScheduleNextExplosion());
+        transform.position = initialPosition;
     }
 
     public void ResetBallPosition()
     {
-        transform.position = initialPosition;
         isPickedUp = false;
         rb.isKinematic = false;
         ballRenderer.enabled = true;
+        transform.position = initialPosition;
     }
 
     private IEnumerator RespawnAndScheduleNextExplosion()
@@ -240,6 +237,7 @@ public class BallManager : MonoBehaviour
         ballRenderer.enabled = false;
         rb.isKinematic = true;
         isPickedUp = false;
+        transform.position = initialPosition;
 
         // Attend le délai de réapparition avant de réinitialiser la balle
         yield return new WaitForSeconds(ballSettings.RespawnDelay);
