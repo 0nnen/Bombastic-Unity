@@ -83,7 +83,8 @@ public class BallManager : MonoBehaviour
     private void HandlePlayerInput()
     {
         if (Input.GetButtonDown("FireMouse")) HandleInteraction(1);
-        else if (Input.GetButtonDown("FireGamepad")){
+        else if (Input.GetButtonDown("FireGamepad"))
+        {
             HandleInteraction(2);
         };
     }
@@ -238,17 +239,11 @@ public class BallManager : MonoBehaviour
         // Explosion et désactivation de la balle
         ballRenderer.enabled = false;
         rb.isKinematic = true;
-
-
+        isPickedUp = false;
 
         // Attend le délai de réapparition avant de réinitialiser la balle
         yield return new WaitForSeconds(ballSettings.RespawnDelay);
         ResetBallPosition();
-
-        // Réactiver la balle pour le nouveau round
-        ballRenderer.enabled = true;
-        rb.isKinematic = false;
-
         // Planifier la prochaine explosion pour le nouveau round
         ScheduleExplosion();
     }
